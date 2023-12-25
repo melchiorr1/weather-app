@@ -5,7 +5,7 @@ const DAYS = 3; // max 3 days for free api key
 async function fetchData(coords) {
   try {
     const response = await fetch(
-      `http://api.weatherapi.com/v1/forecast.json?key=c88ee6341e504c69a49151119212606&q=${coords}&days=${DAYS}&aqi=no`,
+      `https://api.weatherapi.com/v1/forecast.json?key=c88ee6341e504c69a49151119212606&q=${coords}&days=${DAYS}&aqi=no`,
       { mode: "cors" }
     );
     if (!response.ok) {
