@@ -1,25 +1,28 @@
-import { renderHeading, renderWeatherBox} from './render'
+import { renderHeading, renderWeatherBox, renderError } from "./render";
 
-const DAYS = 3
+const DAYS = 3; // max 3 days for free api key
 
 async function fetchData(coords) {
   try {
     const response = await fetch(
-      `http://api.weatherapi.com/v1/forecast.json?key=c88ee6341e504c69a49151119212606&q=${coords}&days=${DAYS}&aqi=no`, { mode: "cors" })
-      if (!response.ok){
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-      const data = await response.json();
-      return data;    
-    } catch (error) {
-    console.log(error) // log the error
+      `http://api.weatherapi.com/v1/forecast.json?key=c88ee6341e504c69a49151119212606&q=${coords}&days=${DAYS}&aqi=no`,
+      { mode: "cors" }
+    );
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    renderError(error);
     return undefined;
   }
 }
 
-function parseJson(data){
+function parseJson(data) {
+  console.log(data);
   const arr = [];
-  for (let i = 0; i < DAYS; i+= 1){
+  for (let i = 0; i < DAYS; i += 1) {
     arr.push({
       icon: data.forecast.forecastday[i].day.condition.icon,
       text: data.forecast.forecastday[i].day.condition.text,
@@ -27,25 +30,43 @@ function parseJson(data){
       date: data.forecast.forecastday[i].date,
     });
   }
-  return{
+  return {
     location: data.location.name,
-    weatherInfo: arr,  
-  }
+    weatherInfo: arr,
+  };
 }
-  
 
-async function displayWeatherBox(position){
-  const jsonData = await fetchData(`${position.coords.latitude},${position.coords.longitude}`);
-  const parsedJson = parseJson(jsonData)
-  const weatherDiv = document.querySelector('.content')
-  renderHeading(parsedJson.location, weatherDiv)
-  renderWeatherBox(parsedJson.weatherInfo, weatherDiv)
-};
+function beginLoadingScreen() {
+  const loadingScreen = document.querySelector(".loading-screen");
+  loadingScreen.classList.remove("hidden");
+}
 
-navigator.geolocation.getCurrentPosition(displayWeatherBox);
+function endLoadingScreen() {
+  const loadingScreen = document.querySelector(".loading-screen");
+  loadingScreen.classList.add("hidden");
+}
 
-// #TODO
-// 1. getLocation ☑
-// 2. loadingScreen
-// 3. Display city name as heading ☑
-// 4. display few days forecast ☑
+async function displayWeatherBox(position) {
+  beginLoadingScreen();
+  const jsonData = await fetchData(
+    `${position.coords.latitude},${position.coords.longitude}`
+  );
+  if (!jsonData) {
+    endLoadingScreen();
+    return;
+  }
+  endLoadingScreen();
+  const parsedJson = parseJson(jsonData);
+  const weatherDiv = document.querySelector(".content");
+  renderHeading(parsedJson.location, weatherDiv);
+  renderWeatherBox(parsedJson.weatherInfo, weatherDiv);
+}
+
+navigator.geolocation.getCurrentPosition(displayWeatherBox, (error) => {
+  if (error.code === error.PERMISSION_DENIED) {
+    renderError("Please allow location access and refresh the app");
+  } else {
+    renderError("Something went wrong, please refresh the app");
+  }
+  endLoadingScreen();
+});
