@@ -1,17 +1,28 @@
 import '../style.sass'
+import LoadingImage from '../img/loading.gif'
 
 function getDayName(date = new Date(), locale = 'en-US') {
     return date.toLocaleDateString(locale, {weekday: 'long'});
   }
+  
+function beginLoadingScreen() {
+    const loadingScreen = document.querySelector(".loading-screen");
+    loadingScreen.children[0].src = LoadingImage;
+    loadingScreen.classList.remove("hidden");
+  }
+  
+  function endLoadingScreen() {
+    const loadingScreen = document.querySelector(".loading-screen");
+    loadingScreen.classList.add("hidden");
+  }
       
-
 function renderWeatherBox(weatherInfos, div){
     weatherInfos.forEach((weatherInfo) => {
         const weatherBox = document.createElement('div')
         weatherBox.classList.add('weather-box')
 
         const weatherIcon = document.createElement('img')
-        weatherIcon.src = weatherInfo.icon
+        weatherIcon.src = `https:${weatherInfo.icon}`
         weatherIcon.classList.add('weather-icon')
         weatherBox.appendChild(weatherIcon)
 
@@ -48,4 +59,4 @@ function renderError(error){
     document.body.appendChild(errorSpan)
 }
 
-export { renderWeatherBox, renderHeading, renderError }
+export { renderWeatherBox, renderHeading, renderError, beginLoadingScreen, endLoadingScreen }

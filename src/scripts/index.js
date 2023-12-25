@@ -1,4 +1,4 @@
-import { renderHeading, renderWeatherBox, renderError } from "./render";
+import { renderHeading, renderWeatherBox, renderError,beginLoadingScreen, endLoadingScreen } from "./render";
 
 const DAYS = 3; // max 3 days for free api key
 
@@ -20,7 +20,6 @@ async function fetchData(coords) {
 }
 
 function parseJson(data) {
-  console.log(data);
   const arr = [];
   for (let i = 0; i < DAYS; i += 1) {
     arr.push({
@@ -34,16 +33,6 @@ function parseJson(data) {
     location: data.location.name,
     weatherInfo: arr,
   };
-}
-
-function beginLoadingScreen() {
-  const loadingScreen = document.querySelector(".loading-screen");
-  loadingScreen.classList.remove("hidden");
-}
-
-function endLoadingScreen() {
-  const loadingScreen = document.querySelector(".loading-screen");
-  loadingScreen.classList.add("hidden");
 }
 
 async function displayWeatherBox(position) {
@@ -61,6 +50,8 @@ async function displayWeatherBox(position) {
   renderHeading(parsedJson.location, weatherDiv);
   renderWeatherBox(parsedJson.weatherInfo, weatherDiv);
 }
+
+beginLoadingScreen();
 
 navigator.geolocation.getCurrentPosition(displayWeatherBox, (error) => {
   if (error.code === error.PERMISSION_DENIED) {
