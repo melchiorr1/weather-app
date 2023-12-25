@@ -1,29 +1,44 @@
 import '../style.sass'
 
-export default function createWeatherBox(weatherInfo, div){
-    const weatherBox = document.createElement('div')
-    weatherBox.classList.add('weather-box')
+function getDayName(date = new Date(), locale = 'en-US') {
+    return date.toLocaleDateString(locale, {weekday: 'long'});
+  }
+      
 
-    const weatherLocation = document.createElement('span')
-    weatherLocation.textContent = weatherInfo.location
-    weatherLocation.classList.add('weather-location')
-    weatherBox.appendChild(weatherLocation)
+function renderWeatherBox(weatherInfos, div){
+    weatherInfos.forEach((weatherInfo) => {
+        const weatherBox = document.createElement('div')
+        weatherBox.classList.add('weather-box')
 
-    const weatherIcon = document.createElement('img')
-    weatherIcon.src = weatherInfo.icon
-    weatherIcon.classList.add('weather-icon')
-    weatherBox.appendChild(weatherIcon)
+        const weatherIcon = document.createElement('img')
+        weatherIcon.src = weatherInfo.icon
+        weatherIcon.classList.add('weather-icon')
+        weatherBox.appendChild(weatherIcon)
 
-    const weatherTemp = document.createElement('span')
-    weatherTemp.textContent = `${weatherInfo.temp}°C`
-    weatherTemp.classList.add('weather-temp')
-    weatherBox.appendChild(weatherTemp)
+        const weatherTemp = document.createElement('span')
+        weatherTemp.textContent = `${Math.round(weatherInfo.temp)}°C`
+        weatherTemp.classList.add('weather-temp')
+        weatherBox.appendChild(weatherTemp)
 
-    const weatherDescription = document.createElement('span')
-    weatherDescription.textContent = weatherInfo.text
-    weatherDescription.classList.add('weather-description')
-    weatherBox.appendChild(weatherDescription)
+        const weatherDescription = document.createElement('span')
+        weatherDescription.textContent = weatherInfo.text
+        weatherDescription.classList.add('weather-description')
+        weatherBox.appendChild(weatherDescription)
 
-    div.appendChild(weatherBox)
-    return weatherBox
+        const weatherDate = document.createElement('span')
+        weatherDate.textContent = getDayName(new Date(weatherInfo.date))
+        weatherDate.classList.add('weather-date')
+        weatherBox.appendChild(weatherDate)
+
+        div.appendChild(weatherBox)
+    });
 }
+
+function renderHeading(location, div){
+    const heading = document.createElement('h1')
+    heading.classList.add('heading')
+    heading.textContent = location
+    div.parentNode.insertBefore(heading, div)
+}
+
+export { renderWeatherBox, renderHeading }
