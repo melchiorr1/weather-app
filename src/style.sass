@@ -12,6 +12,7 @@ body
 .content
     display: flex
     justify-content: center
+    flex-wrap: wrap
     padding: 0 2rem
     gap: 2rem
 
@@ -21,6 +22,7 @@ body
         align-items: center
         text-align: center
         flex: 1
+        min-width: 8.125rem
         padding: 2rem 1rem
         outline: 1px solid green
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5)
@@ -33,3 +35,31 @@ body
         .weather-description
             font-size: 1.5rem
             font-weight: 300
+        .weather-date
+            font-size: 1.2rem
+            font-weight: 300
+
+.loading-screen
+    height: 100vh
+    display: flex
+    justify-content: center
+    align-items: center
+
+    img
+        width: 100px
+        height: 100px
+
+.hidden
+    display: none
+
+.error
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    padding: 1rem
+    background-color: red
+    color: white
+    font-size: 1.2rem
+    text-align: center
+    z-index: 9999
