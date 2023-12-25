@@ -41,4 +41,11 @@ function renderHeading(location, div){
     div.parentNode.insertBefore(heading, div)
 }
 
-export { renderWeatherBox, renderHeading }
+function renderError(error){
+    const errorSpan = document.createElement('span')
+    errorSpan.classList.add('error')
+    errorSpan.textContent = error
+    document.body.appendChild(errorSpan)
+}
+
+export { renderWeatherBox, renderHeading, renderError }
