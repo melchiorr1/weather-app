@@ -11,8 +11,10 @@ async function fetchData(coords) {
     if (!response.ok) {
       throw new Error(`${response.status} ${response.statusText}`);
     }
-    const data = await response.json();
-    return data;
+    else{
+      const data = await response.json();
+      return data;
+    }
   } catch (error) {
     renderError(error);
     return undefined;
@@ -36,7 +38,6 @@ function parseJson(data) {
 }
 
 async function displayWeatherBox(position) {
-  beginLoadingScreen();
   const jsonData = await fetchData(
     `${position.coords.latitude},${position.coords.longitude}`
   );
